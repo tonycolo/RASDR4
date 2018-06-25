@@ -7,23 +7,23 @@ Most common streaming parameters, such as center frequency, effective sampling r
 are supported.
 
 External libraries used are:
- - [FFTW3]     Fast Fourier Transforms](http://www.fftw.org/)
- - [Poco]      C++ Utilities](https://pocoproject.org/)
- - [RTAudio]   Real time audio driver](https://www.music.mcgill.ca/~gary/rtaudio/)
- - [LimeSuite] Driver/API for LimeSDR](https://github.com/tonycolo/RASDR4/tree/master)
+ - [FFTW3     Fast Fourier Transforms](http://www.fftw.org/)
+ - [Poco      C++ Utilities](https://pocoproject.org/)
+ - [RTAudio   Real time audio driver](https://www.music.mcgill.ca/~gary/rtaudio/)
+ - [LimeSuite Driver/API for LimeSDR](https://github.com/tonycolo/RASDR4/tree/master)
 
-##Build Instructions
-##(WIP! Lots to do to enable Windows building)
+## Build Instructions
+* (WIP! Lots to do to enable Windows building)
 1.  Download and build the above libraries
 2.  Copy header files into include/
 3.  Copy shared libaries into the primary project directory.
 This entails the following:
-libLimeSuite.so.18.04-1
-libPocoFoundation.so.60
-libPocoJSON.so.60
-libPocoUtil.so.60
-libPocoXML.so.60
-librtaudio.so
+  libLimeSuite.so.18.04-1
+  libPocoFoundation.so.60
+  libPocoJSON.so.60
+  libPocoUtil.so.60
+  libPocoXML.so.60
+  librtaudio.so
 
 4.  You might need to adjust CMakelists.txt to resolve path issues.
 5.  cd into the main directory
@@ -36,6 +36,6 @@ TO DO:  automatically download, build, and configure dependencies [like this](ht
 
 See the [running instructions](https://tinyurl.com/yadlzbhp) for using the application, configuring USB, troubleshooting, and so forth.
 
-##Development
+## Development
 The core class file with main is rasdr-fftw.cpp
 
