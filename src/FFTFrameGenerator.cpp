@@ -62,7 +62,7 @@ void FFTFrameGenerator::start(int loops) {
     float amplitudes[samples];
     double powers[samples];
     double amplitudes2[samples];
-    std::complex<double> dcout[samples];
+
     double max_power;
     int blocks = 0;
     uint64_t first_time = 0;
@@ -72,6 +72,7 @@ void FFTFrameGenerator::start(int loops) {
     std::complex<double> fill(0,0);
 
     std::vector<std::complex<double>> dc_out(samples);
+    std::complex<double> dcout[samples];
     //for (int i = 0; i < samples; i++) {
     //    dc_out.push_back(std::complex<double> (0,0));
     //}
@@ -92,9 +93,7 @@ void FFTFrameGenerator::start(int loops) {
         for (int i = 0; i < samples; i++) {
             double ii = (double) frame.data[i*2];
             double jj = (double) frame.data[i*2 + 1];
-            if (has_audio_stream) {
-                amplitudes2[i] = ii*ii+jj*jj;//amplitude;
-            }
+
             /* dc bias removal code */
             std::complex<double> c(ii,jj);
             dc_in[i] = c;
@@ -102,15 +101,12 @@ void FFTFrameGenerator::start(int loops) {
             fftw_in[i][0] = ii;
             fftw_in[i][1] = jj;
         }
-        if (has_audio_stream) {
-            buffer->pushBlockFloat(amplitudes2, samples,first_time);
-        }
-        /*blocker->work(samples,dc_in, dc_out, dcout);
+        blocker->work(samples,dc_in, dc_out, dcout);
         for (int i = 0; i < samples; i++) {
             std::complex<double> c = dcout[i];
-            fftw_in[i][0] = c.real(); //normalize 12-bit for -1 to 1 values
+            fftw_in[i][0] = c.real();
             fftw_in[i][1] = c.imag();
-        }*/
+        }
         //dc_in.clear();
         fftw_execute(p);
         int dc_index = -999;
@@ -119,6 +115,12 @@ void FFTFrameGenerator::start(int loops) {
             double iqsq = fftw_out[i][0] * fftw_out[i][0] + fftw_out[i][1] * fftw_out[i][1];
             double amplitude = sqrt(iqsq)/samples;
             amplitudes[i] = amplitudes[i] + amplitude;
+            if (has_audio_stream) {
+                amplitudes2[i] = iqsq;//amplitude;
+            }
+        }
+        if (has_audio_stream) {
+            buffer->pushBlockFloat(amplitudes2, samples,first_time);
         }
         blocks = blocks + 1;
         if (blocks == blocks_per_frame) {
